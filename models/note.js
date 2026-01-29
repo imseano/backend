@@ -2,30 +2,21 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
-const url = process.env.MONGODB_URI
-console.log('connecting to', url)
-
-mongoose.connect(url, { family: 4 })
-    .then(result => {
-        console.log('connected to MongoDB')
-    })
-    .catch(error => {
-        console.log('error connecting to MongoDB:', error.message)
-    })
-
 const noteSchema = new mongoose.Schema({
-    content: String,
-    important: Boolean
+  content: {
+    type: String,
+    minLength: 5,
+    required: true
+  },
+  important: Boolean
 })
 
-const Note = mongoose.model('Note', noteSchema)
-
 noteSchema.set('toJSON', {
-    transform: (doc, ret) => {
-        ret.id = ret._id.toString()
-        delete ret._id
-        delete ret.__v
-    }
+  transform: (doc, ret) => {
+    ret.id = ret._id.toString()
+    delete ret._id
+    delete ret.__v
+  }
 })
 
 module.exports = mongoose.model('Note', noteSchema)
